@@ -93,10 +93,10 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             while (true) {
                 KeyProcess_Move(); // 키보드 입력처리
                 projectileProcess(); // 탄 처리
-                enemyProcess(); ///적 움직임 처리
+                enemyProcess(); /// 적 움직임 처리
                 en_cnt = en_cnt + 1;
                 reload = reload - 1;
-                //reloading();// 발사 후 재장전 처리
+                // reloading();// 발사 후 재장전 처리
                 repaint(); // 갱신된 p_x,p_y값으로 새로 그리기
                 Thread.sleep(10); // 10밀리섹마다 스레드 반복 (1000ms = 1초)
             }
@@ -110,22 +110,22 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 pj = new Projectile(p_x, p_y);
                 projectile_List.add(pj);
                 Sound("fire.wav", false);
-                reload = 10                ; //1초 재장전
+                reload = 10; // 1초 재장전
             }
         }
     }
 
-    public void enemyProcess(){ //적 처리
-        for(int i = 0;i<enemy_List.size();i++){
-            en = (Enemy)(enemy_List.get(i));
+    public void enemyProcess() { // 적 처리
+        for (int i = 0; i < enemy_List.size(); i++) {
+            en = (Enemy) (enemy_List.get(i));
             en.move();
-            if(en.x > f_width-150){
+            if (en.x > f_width - 150) {
                 enemy_List.remove(i);
             }
         }
 
-        if (en_cnt % 30 == 0){
-            
+        if (en_cnt % 30 == 0) {
+
             en = new Enemy(100, p_y - 300);
             enemy_List.add(en);
             en = new Enemy(100, p_y - 400);
@@ -135,9 +135,11 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    /*public void reloading() {
-        
-    }*/
+    /*
+     * public void reloading() {
+     * 
+     * }
+     */
 
     public void paint(Graphics g) { // 버퍼를 사용하여 화면에 출력
         buffImage = createImage(f_width, f_height);
@@ -148,19 +150,18 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 
     public void update(Graphics g) { // 버퍼 업뎃
         draw_BG();
-       
+
         draw_Enemy();
         draw_Projectile();
         draw_char();
-        
-        
 
         g.drawImage(buffImage, 0, 0, this);
     }
 
-    public void draw_BG(){
-        buffg.drawImage(bg_img,0,0,this);
+    public void draw_BG() {
+        buffg.drawImage(bg_img, 0, 0, this);
     }
+
     public void draw_char() { // 캐릭터 그리는 메소드
         int imgsize = getImageSize(player_Image);
         // buffg.clearRect(0, 0, f_width, f_height);
@@ -190,17 +191,12 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 
     public void draw_Enemy() { // 적 이미지를 그리는 메소드
         for (int i = 0; i < enemy_List.size(); ++i) {
-            en = (Enemy)(enemy_List.get(i));
+            en = (Enemy) (enemy_List.get(i));
             buffg.drawImage(enemy_img, en.x, en.y, this);// 배열에 생성된 각 적을 판별하여 이미지 그리기
         }
     }
 
-    
-
     // 키보드 입력
-
-
-
 
     public void keyPressed(KeyEvent e) { // 키보드가 눌려졌을때의 이벤트 처리 함수
         switch (e.getKeyCode()) {
