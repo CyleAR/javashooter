@@ -28,8 +28,8 @@ class game_frame extends JFrame implements KeyListener,Runnable{
     boolean KeyD = false;
     boolean keySpace = false;
     
-    int p_speed=5; // 플레이어 캐릭터 속도
-    int projectile_speed = 10; //탄속
+    int p_speed; // 플레이어 캐릭터 속도
+    int projectile_speed; //탄속
 
     Toolkit tk = Toolkit.getDefaultToolkit(); // 이미지 불러오기용 툴킷
     Image player_Image = tk.getImage("player.png");
@@ -68,7 +68,9 @@ class game_frame extends JFrame implements KeyListener,Runnable{
     private void init(){
         p_x = f_width/2;
         p_y = 550;
-        reload = 0; 
+        projectile_speed = 10;
+        reload = 0;
+        p_speed = 10;
     }
     private void start(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 오른쪽 위 X키로 정상종료
@@ -191,10 +193,17 @@ class game_frame extends JFrame implements KeyListener,Runnable{
     }
 
     public void KeyProcess_Move(){ // 키 입력값을 바탕으로 플레이 구현
-        if(KeyA == true)
-            p_x = p_x - p_speed;
-        if(KeyD == true)
-            p_x = p_x + p_speed;
+        if(KeyA == true){
+            if(p_x >= 0){
+                p_x = p_x - p_speed;
+            }
+        }
+        if(KeyD == true){
+            if(p_x <= 1280)
+            {
+                p_x = p_x + p_speed;
+            }
+        }
     }
 }
 
