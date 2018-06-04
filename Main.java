@@ -12,20 +12,6 @@ import javax.swing.*;
 
 
 public class Main{
-    public void Sound(String File, boolean Loop){
-        Clip clip;
-        try{
-            AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
-            clip = AudioSystem.getClip();
-            clip.open(ais);
-            clip.start();
-            if(Loop){
-                clip.loop(-1);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
     public static void main(String[] args) {
             game_frame fm = new game_frame();
     }
@@ -223,6 +209,20 @@ class game_frame extends JFrame implements KeyListener,Runnable{
             {
                 p_x = p_x + p_speed;
             }
+        }
+    }
+    public void Sound(String file, boolean Loop){
+        Clip clip;
+        try{
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+            if(Loop){
+                clip.loop(-1);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 }
