@@ -42,14 +42,14 @@ class game_frame extends JFrame implements KeyListener,Runnable{
     Image enemy_img = tk.getImage("enemy.png");
 
     ArrayList projectile_List = new ArrayList(); //탄 관리용 배열
-    //ArrayList Enemy_List = new Enemy_List();
+    //ArrayList enemy_List = new enemy_List();
     //ArrayList enem_projectile_List = new enem_projectile_List();
 
     Image buffImage; 
     Graphics buffg;
     
     Projectile pj; //프로젝타일 클래스 접근
-    //Enemy en; //적 클래스 접근
+    Enemy en; //적 클래스 접근
 
     game_frame(){
         init();
@@ -238,5 +238,8 @@ class Projectile{ //탄 위치 파악 및 이동용 클래스
     public void move(int projec_speed){
         pos.y = pos.y - projec_speed;
     }
+}
+
+class Enemy{
 
 }
