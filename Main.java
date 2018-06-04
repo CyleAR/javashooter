@@ -81,7 +81,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 
     private void init() {
         p_x = f_width / 2;
-        p_y = 620;
+        p_y = 580;
         projectile_speed = 10;
         reload = 0;
         p_speed = 5;
@@ -90,6 +90,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         en_height = getImageHeight(enemy_img);
         pj_width = getImageWidth(projectile_img);
         pj_height = getImageHeight(projectile_img);
+        Sound("Victory.wav", true);
     }
 
     private void start() {
@@ -105,7 +106,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 KeyProcess_Move(); // 키보드 입력처리
                 projectileProcess(); // 탄 처리
                 enemyProcess(); // 적 움직임 처리
-                isCrush();
+                //isCrush();
                 en_cnt = en_cnt + 1;
                 reload = reload - 1;
                 repaint(); // 갱신된 p_x,p_y값으로 새로 그리기
@@ -123,7 +124,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 pj = new Projectile((int) (p_x - imgsize / 2), p_y - 10);
                 projectile_List.add(pj);
                 Sound("fire.wav", false);
-                reload = 5; // 재장전
+                reload = 40; // 재장전
             }
         }
     }
@@ -142,6 +143,17 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             }
         }
     }
+    
+    public boolean isCrash(int x1, int x2,int x1_,int x2_) { // 충돌확인
+        boolean check = false;
+        if (x1 <= x2 + x2_/2 && x2+x2_ <= x1+x1_) {
+            check = true;
+        } else {
+            check = false;
+        }
+
+        return check; // check의 값을 리턴
+    }
 
     public void enemyProcess() { // 적 처리
         for (int i = 0; i < enemy_List.size(); i++) {
@@ -154,25 +166,15 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 
         if (en_cnt % 100 == 0) {
 
-            en = new Enemy(100, p_y - 300);
+            en = new Enemy(100, 620 - 300);
             enemy_List.add(en);
-            en = new Enemy(100, p_y - 400);
+            en = new Enemy(100, 620 - 400);
             enemy_List.add(en);
-            en = new Enemy(100, p_y - 500);
+            en = new Enemy(100, 620 - 500);
             enemy_List.add(en);
         }
     }
 
-    public boolean isCrash(int x1, int x2,int x1_,int x2_) { // 충돌확인
-        boolean check = false;
-        if (x1 <= x2 + x2_/2 && x2+x2_ <= x1+x1_) {
-            check = true;
-        } else {
-            check = false;
-        }
-
-        return check; // check의 값을 리턴
-    }
 
     public void paint(Graphics g) { // 버퍼를 사용하여 화면에 출력
         buffImage = createImage(f_width, f_height);
@@ -282,6 +284,16 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         if (KeyD == true) {
             if (p_x <= 1280) {
                 p_x = p_x + p_speed;
+            }
+        }
+        if (KeyW == true) {
+            if (p_y >= 450) {
+                p_y = p_y - p_speed;
+            }
+        }
+        if (KeyS == true) {
+            if (p_y <= 680) {
+                p_y = p_y + p_speed;
             }
         }
     }
