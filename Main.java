@@ -23,6 +23,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     int p_x;
     int p_y;
     int reload;
+    int en_cnt;
 
     Thread th; // 스레드 생성
 
@@ -39,9 +40,10 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     Image player_Image = tk.getImage("player.png");
     Image projectile_img = tk.getImage("ammo.png");
     Image enemy_img = tk.getImage("enemy.png");
+    Image bg_img = tk.getImage("background.png");
 
     ArrayList projectile_List = new ArrayList(); // 탄 관리용 배열
-    // ArrayList enemy_List = new enemy_List();
+    ArrayList enemy_List = new ArrayList();
     // ArrayList enem_projectile_List = new enem_projectile_List();
 
     Image buffImage;
@@ -71,10 +73,11 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 
     private void init() {
         p_x = f_width / 2;
-        p_y = 550;
+        p_y = 620;
         projectile_speed = 10;
         reload = 0;
         p_speed = 10;
+        en_cnt = 0;
     }
 
     private void start() {
@@ -85,11 +88,13 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         th.start(); // 스레드 실행 - run 함수 실행
     }
 
-    public void run() { // 스레드 무한반복 구문
+    public void run() { // 스레드 실행되면 호출됨, 스레드 무한반복 구문
         try {
             while (true) {
                 KeyProcess_Move(); // 키보드 입력처리
                 projectileProcess(); // 탄 처리
+                enemyProcess(); ///적 움직임 처리
+                en_cnt = en_cnt + 1;
                 reloading();// 발사 후 재장전 처리
                 repaint(); // 갱신된 p_x,p_y값으로 새로 그리기
                 Thread.sleep(20); // 20밀리섹마다 스레드 반복
@@ -109,6 +114,27 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
+    public void enemyProcess(){ //적 움직임 처리
+        for(int i = 0;i<enemy_List.size();i++){
+            en = (Enemy)(enemy_List.get(i));
+            en.move();
+            if(en.x > f_width){
+                enemy_List.remove(i);
+            }
+        }
+
+        if (en_cnt % 300 == 0){
+            en = new Enemy(100, p_y - 200);
+            enemy_List.add(en);
+            en = new Enemy(100, p_y - 300);
+            enemy_List.add(en);
+            en = new Enemy(100, p_y - 400);
+            enemy_List.add(en);
+            en = new Enemy(100, p_y - 500);
+            enemy_List.add(en);
+        }
+    }
+
     public void reloading() {
         reload = reload - 1;
     }
@@ -120,14 +146,20 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         update(g);
     }
 
-    public void update(Graphics g) {
-        draw_char();
+    public void update(Graphics g) { // 버퍼 업뎃
+        draw_BG();
         draw_Projectile();
+        draw_char();
+        
+        draw_Enemy();
 
         g.drawImage(buffImage, 0, 0, this);
     }
 
-    public void draw_char() { // 캐릭터 그리는 함수
+    public void draw_BG(){
+        buffg.drawImage(bg_img,0,0,this);
+    }
+    public void draw_char() { // 캐릭터 그리는 메소드
         int imgsize = getImageSize(player_Image);
         // buffg.clearRect(0, 0, f_width, f_height);
         buffg.drawImage(player_Image, (int) (p_x - imgsize / 2), p_y, this);
@@ -154,6 +186,20 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
+    public void draw_Enemy() { // 적 이미지를 그리는 메소드
+        for (int i = 0; i < enemy_List.size(); ++i) {
+            en = (Enemy)(enemy_List.get(i));
+            buffg.drawImage(enemy_img, en.x, en.y, this);// 배열에 생성된 각 적을 판별하여 이미지 그리기
+        }
+    }
+
+    
+
+    // 키보드 입력
+
+
+
+    
     public void keyPressed(KeyEvent e) { // 키보드가 눌려졌을때의 이벤트 처리 함수
         switch (e.getKeyCode()) {
         case KeyEvent.VK_W:
@@ -211,7 +257,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void Sound(String file, boolean Loop) {
+    public void Sound(String file, boolean Loop) { // 소리 출력용 메소드
         Clip clip;
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -227,6 +273,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     }
 }
 
+// 다른 클래스들
+
 class Projectile { // 탄 위치 파악 및 이동용 클래스
     Point pos; // 탄 좌표
 
@@ -240,5 +288,16 @@ class Projectile { // 탄 위치 파악 및 이동용 클래스
 }
 
 class Enemy {
+    int x;
+    int y;
+
+    Enemy(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void move() {
+        x = x + 3;
+    }
 
 }
