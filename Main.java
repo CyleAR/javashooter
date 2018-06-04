@@ -110,7 +110,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 pj = new Projectile(p_x, p_y);
                 projectile_List.add(pj);
                 Sound("fire.wav", false);
-                reload = 100; //1초 재장전
+                reload = 10                ; //1초 재장전
             }
         }
     }
@@ -119,14 +119,13 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         for(int i = 0;i<enemy_List.size();i++){
             en = (Enemy)(enemy_List.get(i));
             en.move();
-            if(en.x > f_width){
+            if(en.x > f_width-150){
                 enemy_List.remove(i);
             }
         }
 
         if (en_cnt % 30 == 0){
-            en = new Enemy(100, p_y - 200);
-            enemy_List.add(en);
+            
             en = new Enemy(100, p_y - 300);
             enemy_List.add(en);
             en = new Enemy(100, p_y - 400);
@@ -179,7 +178,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             } else {
                 projectile_img = tk.getImage("ammo.png");
             }
-            buffg.drawImage(projectile_img, (int) (pj.pos.x - imgsize / 2), pj.pos.y - 12, this);
+            buffg.drawImage(projectile_img, (int) (pj.pos.x - imgsize / 2), pj.pos.y - 10, this);
 
             pj.move(projectile_speed);// 그려진 탄환들을 정해진 숫자만큼 이동시키기
 
