@@ -1,11 +1,31 @@
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 
 public class Main{
+    public void Sound(String File, boolean Loop){
+        Clip clip;
+        try{
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+            if(Loop){
+                clip.loop(-1);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
             game_frame fm = new game_frame();
     }
@@ -17,7 +37,6 @@ class game_frame extends JFrame implements KeyListener,Runnable{
 
     int p_x;
     int p_y;
-    double imageWidth; //외부 이미지 width저장용 변수
     int reload;
 
     Thread th; //스레드 생성
@@ -61,8 +80,8 @@ class game_frame extends JFrame implements KeyListener,Runnable{
         setVisible(true);
     }
     
-    private void getImageSize(Image i){ //이미지 사이즈 불러오기
-        imageWidth = i.getWidth(null);
+    private int getImageSize(Image i){ //이미지 사이즈 불러오기
+        return i.getWidth(null);
     } 
 
     private void init(){
@@ -97,7 +116,8 @@ class game_frame extends JFrame implements KeyListener,Runnable{
             if(reload <= 0){
                 pj = new Projectile(p_x, p_y);
                 projectile_List.add(pj);
-                reload = 10;
+                Sound("fire.wav", false);
+                reload = 5;
             }
         }
     }
@@ -120,14 +140,14 @@ class game_frame extends JFrame implements KeyListener,Runnable{
     }
 
     public void draw_char(){ //캐릭터 그리는 함수
-        getImageSize(player_Image);
-        buffg.clearRect(0, 0, f_width, f_height);
-        buffg.drawImage(player_Image, (int)(p_x-imageWidth/2) , p_y, this);
+        int imgsize = getImageSize(player_Image);
+        //buffg.clearRect(0, 0, f_width, f_height);
+        buffg.drawImage(player_Image, (int)(p_x - imgsize/2) , p_y, this);
     }
 
     
     public void draw_Projectile(){ //탄 그리는 메소드
-        getImageSize(projectile_img);
+        int imgsize = getImageSize(projectile_img);
 
         for (int i = 0; i < projectile_List.size(); i++){
             
@@ -138,7 +158,7 @@ class game_frame extends JFrame implements KeyListener,Runnable{
             else{
                 projectile_img = tk.getImage("ammo.png");
             }
-            buffg.drawImage(projectile_img, (int)(pj.pos.x-imageWidth/2), pj.pos.y - 20, this); 
+            buffg.drawImage(projectile_img, (int)(pj.pos.x - imgsize/2), pj.pos.y - 12, this); 
 
             pj.move(projectile_speed);//그려진 탄환들을 정해진 숫자만큼 이동시키기
             
@@ -210,7 +230,6 @@ class game_frame extends JFrame implements KeyListener,Runnable{
 
 class Projectile{ //탄 위치 파악 및 이동용 클래스
     Point pos; //탄 좌표
-    int reload = 10;
     
     Projectile(int x,int y){
         pos = new Point(x,y);
