@@ -2,10 +2,6 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 
@@ -22,6 +18,7 @@ class game_frame extends JFrame implements KeyListener,Runnable{
     int p_x;
     int p_y;
     double imageWidth; //외부 이미지 width저장용 변수
+    int reload;
 
     Thread th; //스레드 생성
 
@@ -40,14 +37,14 @@ class game_frame extends JFrame implements KeyListener,Runnable{
     Image enemy_img = tk.getImage("enemy.png");
 
     ArrayList projectile_List = new ArrayList(); //탄 관리용 배열
-    ArrayList Enemy_List = new Enemy_List();
-    ArrayList enem_projectile_List = new enem_projectile_List();
+    //ArrayList Enemy_List = new Enemy_List();
+    //ArrayList enem_projectile_List = new enem_projectile_List();
 
     Image buffImage; 
     Graphics buffg;
     
     Projectile pj; //프로젝타일 클래스 접근
-    Enemy en; //적 클래스 접근
+    //Enemy en; //적 클래스 접근
 
     game_frame(){
         init();
@@ -71,6 +68,7 @@ class game_frame extends JFrame implements KeyListener,Runnable{
     private void init(){
         p_x = f_width/2;
         p_y = 550;
+        reload = 0; 
     }
     private void start(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 오른쪽 위 X키로 정상종료
@@ -85,18 +83,25 @@ class game_frame extends JFrame implements KeyListener,Runnable{
             while(true){
                 KeyProcess_Move(); //키보드 입력처리
                 projectileProcess(); //탄 처리
-
+                reloading();//발사 후 재장전 처리
                 repaint(); //갱신된 p_x,p_y값으로 새로 그리기
                 Thread.sleep(20); //20밀리섹마다 스레드 반복
             }
         }catch(Exception e){}
     }
 
-    public void projectileProcess(){ //탄 처리 메소드
+    public void projectileProcess(){ //키 입력시 탄 처리 메소드
         if(keySpace == true){
-            pj = new Projectile(p_x, p_y);
-            projectile_List.add(pj);
+            if(reload <= 0){
+                pj = new Projectile(p_x, p_y);
+                projectile_List.add(pj);
+                reload = 10;
+            }
         }
+    }
+    public void reloading()
+    {
+        reload = reload - 1;
     }
 
     public void paint(Graphics g){ //버퍼를 사용하여 화면에 출력
@@ -125,7 +130,12 @@ class game_frame extends JFrame implements KeyListener,Runnable{
         for (int i = 0; i < projectile_List.size(); i++){
             
             pj = (Projectile)(projectile_List.get(i)); 
-            
+            if(i%2 == 0){
+                projectile_img = tk.getImage("ammo2.png");
+            }
+            else{
+                projectile_img = tk.getImage("ammo.png");
+            }
             buffg.drawImage(projectile_img, (int)(pj.pos.x-imageWidth/2), pj.pos.y - 20, this); 
 
             pj.move(projectile_speed);//그려진 탄환들을 정해진 숫자만큼 이동시키기
@@ -191,6 +201,7 @@ class game_frame extends JFrame implements KeyListener,Runnable{
 
 class Projectile{ //탄 위치 파악 및 이동용 클래스
     Point pos; //탄 좌표
+    int reload = 10;
     
     Projectile(int x,int y){
         pos = new Point(x,y);
