@@ -1,3 +1,6 @@
+
+// Copyleft 2018 황정환 All codes cann be copied without permission
+
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -114,7 +117,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 projectileProcess(); // 탄 처리
                 enemyProcess(); // 적 움직임 처리
                 enemyProjectileProcess(); // 적이 쏜 탄 처리
-                isKill(); // 적-내가 쏜 탄환 간 충돌 확인
+                isKill(); // 적-플레이어가 쏜 탄환 간 충돌 확인
+                iskilled(); // 적이쏜 탄환-플레이어 간 충돌 확인
                 en_cnt++;
                 reload--;
                 repaint(); // 갱신된 p_x,p_y값으로 새로 그리기
@@ -148,6 +152,17 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                     enemy_List.remove(j);
                     score++;
                 }
+            }
+        }
+    }
+
+    public void iskilled() {
+        int i;
+        for (i = 0; i < enem_projectile_List.size(); ++i) {
+            enp = (EnemyProjectile) enem_projectile_List.get(i);
+            if (isCrash(enp.x, enp.y, p_x, p_y, enemy_projectile_img, player_Image)) {
+                enem_projectile_List.remove(i);
+                score--;
             }
         }
     }
@@ -249,7 +264,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void draw_Status() { //스테이터스 창 그리는 메소드
+    public void draw_Status() { // 스테이터스 창 그리는 메소드
         String n;
         n = "SCORE : " + score;
         buffg.setColor(Color.white);
