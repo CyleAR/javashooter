@@ -36,6 +36,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     boolean KeyS = false;
     boolean KeyD = false;
     boolean keySpace = false;
+    boolean keyShift = false;
 
     int p_speed; // 플레이어 캐릭터 속도
     int projectile_speed; // 탄속
@@ -45,7 +46,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     Image projectile_img = tk.getImage("ammo.png");
     Image enemy_img = tk.getImage("enemy.png");
     Image bg_img = tk.getImage("background.png");
-    Image enemy_projectile_img = tk.getImage("enemyammo");
+    Image enemy_projectile_img = tk.getImage("enemyammo.png");
 
     ArrayList projectile_List = new ArrayList(); // 탄 관리용 배열
     ArrayList enemy_List = new ArrayList(); // 적 관리용 배열
@@ -86,7 +87,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         p_y = 580;
         projectile_speed = 5;
         reload = 0;
-        p_speed = 5;
+        p_speed = 4;
         en_cnt = 0;
         en_width = getImageWidth(enemy_img);
         en_height = getImageHeight(enemy_img);
@@ -110,8 +111,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 enemyProcess(); // 적 움직임 처리
                 enemyProjectileProcess();
                 // isCrush();
-                en_cnt = en_cnt + 1;
-                reload = reload - 1;
+                en_cnt++;
+                reload--;
                 repaint(); // 갱신된 p_x,p_y값으로 새로 그리기
                 Thread.sleep(10); // 10밀리섹마다 스레드 반복 (1000ms = 1초)
             }
@@ -167,11 +168,11 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void enemyProjectileProcess() {
-        if (true) {
+    public void enemyProjectileProcess() { // 적이 쏜 탄 처리
+        if (en_cnt % 300 == 0) {
             for (int i = 0; i < enemy_List.size(); i++) {
                 en = (Enemy) (enemy_List.get(i));
-                enp = new EnemyProjectile(en.x, en.y);
+                enp = new EnemyProjectile(en.x + 32, en.y + 50);
                 enem_projectile_List.add(enp);
             }
         }
@@ -256,6 +257,9 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         case KeyEvent.VK_SPACE:
             keySpace = true;
             break;
+        case KeyEvent.VK_SHIFT:
+            keyShift = true;
+            break;
         default:
             break;
         }
@@ -277,6 +281,9 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             break;
         case KeyEvent.VK_SPACE:
             keySpace = false;
+            break;
+        case KeyEvent.VK_SHIFT:
+            keyShift = false;
             break;
         default:
             break;
@@ -306,6 +313,11 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             if (p_y <= 650) {
                 p_y = p_y + p_speed;
             }
+        }
+        if (keyShift == true) {
+            p_speed = 8;
+        } else if (keyShift == false) {
+            p_speed = 4;
         }
     }
 
@@ -370,8 +382,8 @@ class Enemy {
 }
 
 class EnemyProjectile {
-    int x = 0;
-    int y = 0;
+    int x;
+    int y;
 
     EnemyProjectile(int x, int y) {
         this.x = x;
@@ -379,6 +391,6 @@ class EnemyProjectile {
     }
 
     public void move() {
-        y = y + 1;
+        y = y + 5;
     }
 }
