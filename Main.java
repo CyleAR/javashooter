@@ -110,7 +110,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 projectileProcess(); // 탄 처리
                 enemyProcess(); // 적 움직임 처리
                 enemyProjectileProcess();
-                // isCrush();
+                isCrush();
                 en_cnt++;
                 reload--;
                 repaint(); // 갱신된 p_x,p_y값으로 새로 그리기
@@ -139,7 +139,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             pj = (Projectile) projectile_List.get(i);
             for (j = 0; j < enemy_List.size(); ++j) {
                 en = (Enemy) enemy_List.get(j);
-                if (isCrash(en.x, pj.x, en_width, pj_width) == true) {
+                if (isCrash(pj.x,pj.y,en.x,en.y,projectile_img,enemy_img)) {
                     projectile_List.remove(i);
                     enemy_List.remove(j);
                 }
@@ -147,16 +147,18 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public boolean isCrash(int x1, int x2, int x1_, int x2_) { // 충돌확인
-        boolean check;
-        check = false;
-        if (x1 <= x2 + x2_ / 2 && x2 + x2_ <= x1 + x1_) {
-            check = true;
+    public boolean isCrash(int x1, int y1, int x2, int y2, Image img1, Image img2) {
+        boolean check = false;
+        if (Math.abs((x1 + img1.getWidth(null) / 2) - (x2 + img2.getWidth(null) / 2)) < (img2.getWidth(null) / 2
+                + img1.getWidth(null) / 2)
+                && Math.abs((y1 + img1.getHeight(null) / 2)
+                        - (y2 + img2.getHeight(null) / 2)) < (img2.getHeight(null) / 2 + img1.getHeight(null) / 2)) {
+            check = true;// 위값이true면 check에 true를 전달합니다.
         } else {
             check = false;
         }
 
-        return check; // check의 값을 리턴
+        return check; // check의 값을메소드에리턴시킵니다.
     }
 
     public void enemyProcess() { // 적 처리
