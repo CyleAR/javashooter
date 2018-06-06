@@ -91,7 +91,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     private void init() {
         p_x = f_width / 2;
         p_y = 580;
-        projectile_speed = 5;
+        projectile_speed = 8;
         reload = 0;
         p_speed = 4;
         en_cnt = 0;
@@ -135,7 +135,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 pj = new Projectile((int) (p_x - imgsize / 2), p_y - 10);
                 projectile_List.add(pj);
                 Sound("fire.wav", false);
-                reload = 40; // 재장전
+                reload = 30; // 재장전
             }
         }
     }
@@ -160,7 +160,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         int i;
         for (i = 0; i < enem_projectile_List.size(); ++i) {
             enp = (EnemyProjectile) enem_projectile_List.get(i);
-            if (isCrash(enp.x, enp.y, p_x, p_y, enemy_projectile_img, player_Image)) {
+            if (isCrash(enp.x, enp.y, p_x-player_Image.getWidth(null)/2, p_y, enemy_projectile_img, player_Image)) {
                 enem_projectile_List.remove(i);
                 score--;
             }
