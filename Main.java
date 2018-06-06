@@ -45,16 +45,18 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     Image projectile_img = tk.getImage("ammo.png");
     Image enemy_img = tk.getImage("enemy.png");
     Image bg_img = tk.getImage("background.png");
+    Image enemy_projectile_img = tk.getImage("enemyammo");
 
     ArrayList projectile_List = new ArrayList(); // 탄 관리용 배열
-    ArrayList enemy_List = new ArrayList();
-    // ArrayList enem_projectile_List = new enem_projectile_List();
+    ArrayList enemy_List = new ArrayList(); // 적 관리용 배열
+    ArrayList enem_projectile_List = new ArrayList(); // 적들이 쏜 탄 관리용 배열
 
     Image buffImage;
     Graphics buffg;
 
     Projectile pj; // 프로젝타일 클래스 접근
     Enemy en; // 적 클래스 접근
+    EnemyProjectile enp; // 적 탄 클래스 접근
 
     game_frame() {
         init();
@@ -82,7 +84,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     private void init() {
         p_x = f_width / 2;
         p_y = 580;
-        projectile_speed = 10;
+        projectile_speed = 5;
         reload = 0;
         p_speed = 5;
         en_cnt = 0;
@@ -90,7 +92,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         en_height = getImageHeight(enemy_img);
         pj_width = getImageWidth(projectile_img);
         pj_height = getImageHeight(projectile_img);
-        Sound("Victory.wav", true);
+        // Sound("Victory.wav", true);
     }
 
     private void start() {
@@ -106,12 +108,12 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 KeyProcess_Move(); // 키보드 입력처리
                 projectileProcess(); // 탄 처리
                 enemyProcess(); // 적 움직임 처리
-                //isCrush();
+                enemyProjectileProcess();
+                // isCrush();
                 en_cnt = en_cnt + 1;
                 reload = reload - 1;
                 repaint(); // 갱신된 p_x,p_y값으로 새로 그리기
                 Thread.sleep(10); // 10밀리섹마다 스레드 반복 (1000ms = 1초)
-                
             }
         } catch (Exception e) {
         }
@@ -129,24 +131,25 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void isCrush(){
+    public void isCrush() {
         int i;
         int j;
-        for (i = 0; i < projectile_List.size(); i++) {
+        for (i = 0; i < projectile_List.size(); ++i) {
             pj = (Projectile) projectile_List.get(i);
-            for (j = 0; j < enemy_List.size(); j++) {
+            for (j = 0; j < enemy_List.size(); ++j) {
                 en = (Enemy) enemy_List.get(j);
-                if (isCrash(en.x,pj.x,en_width,pj_width)) {
+                if (isCrash(en.x, pj.x, en_width, pj_width) == true) {
                     projectile_List.remove(i);
                     enemy_List.remove(j);
                 }
             }
         }
     }
-    
-    public boolean isCrash(int x1, int x2,int x1_,int x2_) { // 충돌확인
-        boolean check = false;
-        if (x1 <= x2 + x2_/2 && x2+x2_ <= x1+x1_) {
+
+    public boolean isCrash(int x1, int x2, int x1_, int x2_) { // 충돌확인
+        boolean check;
+        check = false;
+        if (x1 <= x2 + x2_ / 2 && x2 + x2_ <= x1 + x1_) {
             check = true;
         } else {
             check = false;
@@ -156,25 +159,23 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     }
 
     public void enemyProcess() { // 적 처리
-        for (int i = 0; i < enemy_List.size(); i++) {
-            en = (Enemy) (enemy_List.get(i));
-            en.move();
-            if (en.x > f_width - 150) {
-                enemy_List.remove(i);
+        if (en_cnt % 300 == 0 && enemy_List.size() == 0) {
+            for (int i = 0; i < 10; i++) {
+                en = new Enemy(100 + i * 100, 620 - 500);
+                enemy_List.add(en);
             }
-        }
-
-        if (en_cnt % 100 == 0) {
-
-            en = new Enemy(100, 620 - 300);
-            enemy_List.add(en);
-            en = new Enemy(100, 620 - 400);
-            enemy_List.add(en);
-            en = new Enemy(100, 620 - 500);
-            enemy_List.add(en);
         }
     }
 
+    public void enemyProjectileProcess() {
+        if (true) {
+            for (int i = 0; i < enemy_List.size(); i++) {
+                en = (Enemy) (enemy_List.get(i));
+                enp = new EnemyProjectile(en.x, en.y);
+                enem_projectile_List.add(enp);
+            }
+        }
+    }
 
     public void paint(Graphics g) { // 버퍼를 사용하여 화면에 출력
         buffImage = createImage(f_width, f_height);
@@ -185,10 +186,10 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 
     public void update(Graphics g) { // 버퍼 업뎃
         draw_BG();
-
         draw_Enemy();
         draw_Projectile();
         draw_char();
+        draw_EnemyProjectile();
 
         g.drawImage(buffImage, 0, 0, this);
     }
@@ -205,15 +206,9 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 
     public void draw_Projectile() { // 탄 그리는 메소드
         for (int i = 0; i < projectile_List.size(); i++) {
-
             pj = (Projectile) (projectile_List.get(i));
-            if (i % 2 == 0) {
-                projectile_img = tk.getImage("ammo2.png");
-            } else {
-                projectile_img = tk.getImage("ammo.png");
-            }
             pj.move(projectile_speed);// 그려진 탄환들을 정해진 숫자만큼 이동시키기
-            if (pj.y > f_height) { // 화면 밖으로 나가면 지움
+            if (pj.y < 0) { // 화면 밖으로 나가면 지움
                 projectile_List.remove(i);
             }
             buffg.drawImage(projectile_img, pj.x, pj.y, this);
@@ -223,7 +218,22 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     public void draw_Enemy() { // 적 이미지를 그리는 메소드
         for (int i = 0; i < enemy_List.size(); i++) {
             en = (Enemy) (enemy_List.get(i));
+            en.move();
+            if (en.x > f_width - 150) { // 화면 밖으로 나가면 지움
+                enemy_List.remove(i);
+            }
             buffg.drawImage(enemy_img, en.x, en.y, this);// 배열에 생성된 각 적을 판별하여 이미지 그리기
+        }
+    }
+
+    public void draw_EnemyProjectile() { // 적이 쏜 탄 그리는 메소드
+        for (int i = 0; i < enem_projectile_List.size(); i++) {
+            enp = (EnemyProjectile) (enem_projectile_List.get(i));
+            enp.move();
+            if (enp.y > 720) { // 화면 밖으로 나가면 지움
+                enem_projectile_List.remove(i);
+            }
+            buffg.drawImage(enemy_projectile_img, enp.x, enp.y, this);
         }
     }
 
@@ -272,7 +282,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             break;
         }
     }
-    public void keyTyped(KeyEvent e){
+
+    public void keyTyped(KeyEvent e) {
     }
 
     public void KeyProcess_Move() { // 키 입력값을 바탕으로 플레이 구현
@@ -287,12 +298,12 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             }
         }
         if (KeyW == true) {
-            if (p_y >= 450) {
+            if (p_y >= 470) {
                 p_y = p_y - p_speed;
             }
         }
         if (KeyS == true) {
-            if (p_y <= 680) {
+            if (p_y <= 650) {
                 p_y = p_y + p_speed;
             }
         }
@@ -333,6 +344,8 @@ class Projectile { // 탄 위치 파악 및 이동용 클래스
 class Enemy {
     int x;
     int y;
+    int cnt = 0;
+    boolean l_or_r = true;
 
     Enemy(int x, int y) {
         this.x = x;
@@ -340,7 +353,32 @@ class Enemy {
     }
 
     public void move() {
-        x = x + 1;
+        if (l_or_r) {
+            x = x + 1;
+            cnt++;
+            if (cnt > 110) {
+                l_or_r = false;
+            }
+        } else {
+            x = x - 1;
+            cnt--;
+            if (cnt == 0) {
+                l_or_r = true;
+            }
+        }
+    }
+}
+
+class EnemyProjectile {
+    int x = 0;
+    int y = 0;
+
+    EnemyProjectile(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
+    public void move() {
+        y = y + 1;
+    }
 }
