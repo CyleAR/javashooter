@@ -14,7 +14,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 
-public class Main {
+public class Main{
     public static void main(String[] args) {
         game_frame fm = new game_frame();
     }
@@ -140,6 +140,25 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
+    public void enemyProcess() { // 적 생성 처리
+        if (en_cnt % 300 == 15 && enemy_List.size() == 0) {
+            for (int i = 0; i < 10; i++) {
+                en = new Enemy(100 + i * 100, 620 - 500);
+                enemy_List.add(en);
+            }
+        }
+    }
+
+    public void enemyProjectileProcess() { // 적이 쏜 탄 처리
+        if (en_cnt % 300 == 0) {
+            for (int i = 0; i < enemy_List.size(); i++) {
+                en = (Enemy) (enemy_List.get(i));
+                enp = new EnemyProjectile(en.x + 32, en.y + 50);
+                enem_projectile_List.add(enp);
+            }
+        }
+    }
+
     public void isKill() {
         int i;
         int j;
@@ -160,7 +179,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         int i;
         for (i = 0; i < enem_projectile_List.size(); ++i) {
             enp = (EnemyProjectile) enem_projectile_List.get(i);
-            if (isCrash(enp.x, enp.y, p_x-player_Image.getWidth(null)/2, p_y, enemy_projectile_img, player_Image)) {
+            if (isCrash(enp.x, enp.y, p_x - player_Image.getWidth(null) / 2, p_y, enemy_projectile_img, player_Image)) {
                 enem_projectile_List.remove(i);
                 score--;
             }
@@ -183,25 +202,6 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         return check;
     }
 
-    public void enemyProcess() { // 적 생성 처리
-        if (en_cnt % 300 == 15 && enemy_List.size() == 0) {
-            for (int i = 0; i < 10; i++) {
-                en = new Enemy(100 + i * 100, 620 - 500);
-                enemy_List.add(en);
-            }
-        }
-    }
-
-    public void enemyProjectileProcess() { // 적이 쏜 탄 처리
-        if (en_cnt % 300 == 0) {
-            for (int i = 0; i < enemy_List.size(); i++) {
-                en = (Enemy) (enemy_List.get(i));
-                enp = new EnemyProjectile(en.x + 32, en.y + 50);
-                enem_projectile_List.add(enp);
-            }
-        }
-    }
-
     public void paint(Graphics g) { // 버퍼를 사용하여 화면에 출력
         buffImage = createImage(f_width, f_height);
         buffg = buffImage.getGraphics();
@@ -216,6 +216,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         draw_char();
         draw_EnemyProjectile();
         draw_Status();
+        draw_Board();
 
         g.drawImage(buffImage, 0, 0, this);
     }
@@ -270,6 +271,17 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         buffg.setColor(Color.white);
         buffg.setFont(new Font("default", Font.BOLD, 20));
         buffg.drawString(n, 640 - 50, 70);
+    }
+
+    public void draw_Board(){
+        if(score < 0)
+        {
+            buffg.clearRect(0, 0, f_width, f_height);
+            buffg.setColor(Color.white);
+            buffg.setFont(new Font("default", Font.BOLD, 100));
+            buffg.drawString("You Lose", 640 - 50, 370);
+        }
+
     }
 
     // 키보드 입력
@@ -371,7 +383,9 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     }
 }
 
-// 다른 클래스들
+/////////////////
+// 다른 클래스들//
+/////////////////
 
 class Projectile { // 탄 위치 파악 및 이동용 클래스
     int x = 0; // 탄 좌표
