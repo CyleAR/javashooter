@@ -28,16 +28,16 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     int f_height = 720;
 
     int p_x; // 플레이어 x좌표
-    int p_y;
+    int p_y; // 플레이어 y좌표
     int reload; // 재장전 간격
-    int en_cnt;
+    int en_cnt; // 적 재장전, 재출현 구현용 카운트
     int en_width;
     int en_height;
     int pj_width;
     int pj_height;
     int score; // 점수
-    int life; //생명
-    int difficulty;//난도
+    int life; // 생명
+    int difficulty;// 난도
     Thread th; // 스레드 생성
 
     boolean KeyW = false; // 입력용 변수
@@ -45,7 +45,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     boolean KeyS = false;
     boolean KeyD = false;
     boolean keySpace = false;
-    boolean keyShift = false; //
+    boolean keyShift = false; 
+    boolean KeyQ = false; // 치트
 
     int p_speed; // 플레이어 캐릭터 속도
     int projectile_speed; // 탄속
@@ -148,7 +149,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     public void enemyProcess() { // 적 생성 처리
         if (en_cnt % 300 == 15 && enemy_List.size() == 0) {
             for (int i = 0; i < 10; i++) {
-                en = new Enemy(100 + i * 100, 620 - 480);
+                en = new Enemy(100 + i * 100, 620 - 480, difficulty);
                 enemy_List.add(en);
             }
             difficulty++;
@@ -156,7 +157,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     }
 
     public void enemyProjectileProcess() { // 적이 쏜 탄 처리
-        if (en_cnt % (300 - 5*difficulty) == 0) {
+        if (en_cnt % (300 - 5 * difficulty) == 0) {
             for (int i = 0; i < enemy_List.size(); i++) {
                 en = (Enemy) (enemy_List.get(i));
                 enp = new EnemyProjectile(en.x + 32, en.y + 50, difficulty);
@@ -165,7 +166,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void isKill() {
+    public void isKill() { // 적이 내가 쏜 탄에 맞았나 처리
         int i;
         int j;
         for (i = 0; i < projectile_List.size(); ++i) {
@@ -181,7 +182,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void iskilled() {
+    public void iskilled() {// 내가 적이 쏜 탄에 맞았나 처리
         int i;
         for (i = 0; i < enem_projectile_List.size(); ++i) {
             enp = (EnemyProjectile) enem_projectile_List.get(i);
@@ -227,14 +228,13 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         g.drawImage(buffImage, 0, 0, this);
     }
 
-    public void draw_BG() {
+    public void draw_BG() { // 배경 그림
         buffg.clearRect(0, 0, f_width, f_height);
         buffg.drawImage(bg_img, 0, 0, this);
     }
 
     public void draw_char() { // 캐릭터 그리는 메소드
         int imgsize = getImageWidth(player_Image);
-        // buffg.clearRect(0, 0, f_width, f_height);
         buffg.drawImage(player_Image, (int) (p_x - imgsize / 2), p_y, this);
     }
 
@@ -253,9 +253,6 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         for (int i = 0; i < enemy_List.size(); i++) {
             en = (Enemy) (enemy_List.get(i));
             en.move();
-            if (en.x > f_width - 150) { // 화면 밖으로 나가면 지움
-                enemy_List.remove(i);
-            }
             buffg.drawImage(enemy_img, en.x, en.y, this);// 배열에 생성된 각 적을 판별하여 이미지 그리기
         }
     }
@@ -277,7 +274,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         buffg.setColor(Color.white);
         buffg.setFont(new Font("default", Font.BOLD, 20));
         buffg.drawString(n, 640 - 50, 70);
-        buffg.drawString("Life : " + life, 640-50,100);
+        buffg.drawString("Life : " + life, 640 - 50, 100);
     }
 
     public void draw_Board() {
@@ -316,6 +313,9 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         case KeyEvent.VK_SHIFT:
             keyShift = true;
             break;
+        case KeyEvent.VK_Q:
+            KeyQ = true;
+            break;
         default:
             break;
         }
@@ -340,6 +340,9 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             break;
         case KeyEvent.VK_SHIFT:
             keyShift = false;
+            break;
+        case KeyEvent.VK_Q:
+            KeyQ = false;
             break;
         default:
             break;
@@ -369,6 +372,9 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             if (p_y <= 650) {
                 p_y = p_y + p_speed;
             }
+        }
+        if (KeyQ == true) {
+            life = life + 1;
         }
         if (keyShift == true) {
             p_speed = 8;
@@ -416,21 +422,23 @@ class Enemy {
     int y;
     int cnt = 0;
     boolean l_or_r = true;
+    int speed;
 
-    Enemy(int x, int y) {
+    Enemy(int x, int y, int z) {
         this.x = x;
         this.y = y;
+        this.speed = z;
     }
 
     public void move() {
         if (l_or_r) {
-            x = x + 1;
+            x = x + (int) ((speed + 1) / 2);
             cnt++;
-            if (cnt > 110) {
+            if (cnt > 100) {
                 l_or_r = false;
             }
         } else {
-            x = x - 1;
+            x = x - (int) ((speed + 1) / 2);
             cnt--;
             if (cnt == 0) {
                 l_or_r = true;
@@ -443,6 +451,7 @@ class EnemyProjectile {
     int x;
     int y;
     int pj_speed;
+
     EnemyProjectile(int x, int y, int z) {
         this.x = x;
         this.y = y;
