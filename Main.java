@@ -14,7 +14,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 
-public class Main{
+import org.omg.PortableServer.LifespanPolicy;
+
+public class Main {
     public static void main(String[] args) {
         game_frame fm = new game_frame();
     }
@@ -34,7 +36,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     int pj_width;
     int pj_height;
     int score; // 점수
-
+    int life; //생명
+    int difficulty;//난도
     Thread th; // 스레드 생성
 
     boolean KeyW = false; // 입력용 변수
@@ -100,6 +103,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         pj_width = getImageWidth(projectile_img);
         pj_height = getImageHeight(projectile_img);
         score = 0;
+        life = 3;
+        difficulty = 1;
         // Sound("Victory.wav", true);
     }
 
@@ -143,17 +148,18 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     public void enemyProcess() { // 적 생성 처리
         if (en_cnt % 300 == 15 && enemy_List.size() == 0) {
             for (int i = 0; i < 10; i++) {
-                en = new Enemy(100 + i * 100, 620 - 500);
+                en = new Enemy(100 + i * 100, 620 - 480);
                 enemy_List.add(en);
             }
+            difficulty++;
         }
     }
 
     public void enemyProjectileProcess() { // 적이 쏜 탄 처리
-        if (en_cnt % 300 == 0) {
+        if (en_cnt % (300 - 5*difficulty) == 0) {
             for (int i = 0; i < enemy_List.size(); i++) {
                 en = (Enemy) (enemy_List.get(i));
-                enp = new EnemyProjectile(en.x + 32, en.y + 50);
+                enp = new EnemyProjectile(en.x + 32, en.y + 50, difficulty);
                 enem_projectile_List.add(enp);
             }
         }
@@ -181,7 +187,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             enp = (EnemyProjectile) enem_projectile_List.get(i);
             if (isCrash(enp.x, enp.y, p_x - player_Image.getWidth(null) / 2, p_y, enemy_projectile_img, player_Image)) {
                 enem_projectile_List.remove(i);
-                score--;
+                life--;
             }
         }
     }
@@ -271,17 +277,21 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         buffg.setColor(Color.white);
         buffg.setFont(new Font("default", Font.BOLD, 20));
         buffg.drawString(n, 640 - 50, 70);
+        buffg.drawString("Life : " + life, 640-50,100);
     }
 
-    public void draw_Board(){
-        if(score < 0)
-        {
+    public void draw_Board() {
+        if (life <= 0) {
             buffg.clearRect(0, 0, f_width, f_height);
             buffg.setColor(Color.black);
             buffg.setFont(new Font("default", Font.BOLD, 100));
             buffg.drawString("You Lose", 640 - 210, 370);
+        } else if (score >= 50) {
+            buffg.clearRect(0, 0, f_width, f_height);
+            buffg.setColor(Color.black);
+            buffg.setFont(new Font("default", Font.BOLD, 100));
+            buffg.drawString("You Win!", 640 - 210, 370);
         }
-
     }
 
     // 키보드 입력
@@ -432,13 +442,14 @@ class Enemy {
 class EnemyProjectile {
     int x;
     int y;
-
-    EnemyProjectile(int x, int y) {
+    int pj_speed;
+    EnemyProjectile(int x, int y, int z) {
         this.x = x;
         this.y = y;
+        this.pj_speed = z;
     }
 
     public void move() {
-        y = y + 5;
+        y = y + 5 + pj_speed;
     }
 }
