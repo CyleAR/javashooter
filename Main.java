@@ -372,8 +372,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             life = life + 1;
         }
         if (keyShift == true) {
-            p_speed = 4;
-            reload_sec = 20;
+            p_speed = 1;
+            reload_sec = 10;
         } else if (keyShift == false) {
             p_speed = 8;
             reload_sec = 30;
