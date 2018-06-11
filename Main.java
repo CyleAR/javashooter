@@ -1,5 +1,5 @@
 
-// Copyleft 2018 황정환 All codes cann be copied without permission
+// Copyleft 2018 황정환 All codes can be copied without permission
 
 import java.util.*;
 import java.awt.*;
@@ -14,8 +14,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 
-import org.omg.PortableServer.LifespanPolicy;
-
 public class Main {
     public static void main(String[] args) {
         game_frame fm = new game_frame();
@@ -29,7 +27,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 
     int p_x; // 플레이어 x좌표
     int p_y; // 플레이어 y좌표
-    int reload; // 재장전 간격
+    int reload; // 재장전 구현용
+    int reload_sec; // 재장전 간격
     int en_cnt; // 적 재장전, 재출현 구현용 카운트
     int en_width;
     int en_height;
@@ -38,6 +37,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     int score; // 점수
     int life; // 생명
     int difficulty;// 난도
+
     Thread th; // 스레드 생성
 
     boolean KeyW = false; // 입력용 변수
@@ -45,7 +45,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     boolean KeyS = false;
     boolean KeyD = false;
     boolean keySpace = false;
-    boolean keyShift = false; 
+    boolean keyShift = false;
     boolean KeyQ = false; // 치트
 
     int p_speed; // 플레이어 캐릭터 속도
@@ -106,6 +106,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         score = 0;
         life = 3;
         difficulty = 1;
+        reload_sec = 30;
         // Sound("Victory.wav", true);
     }
 
@@ -141,7 +142,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
                 pj = new Projectile((int) (p_x - imgsize / 2), p_y - 10);
                 projectile_List.add(pj);
                 Sound("fire.wav", false);
-                reload = 30; // 재장전
+                reload = reload_sec; // 재장전
             }
         }
     }
@@ -157,7 +158,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     }
 
     public void enemyProjectileProcess() { // 적이 쏜 탄 처리
-        if (en_cnt % (300 - 5 * difficulty) == 0) {
+        if (en_cnt % (300 - 30 * difficulty) == 0) {
             for (int i = 0; i < enemy_List.size(); i++) {
                 en = (Enemy) (enemy_List.get(i));
                 enp = new EnemyProjectile(en.x + 32, en.y + 50, difficulty);
@@ -182,7 +183,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void iskilled() {// 내가 적이 쏜 탄에 맞았나 처리
+    public void iskilled() { // 내가 적이 쏜 탄에 맞았나 처리
         int i;
         for (i = 0; i < enem_projectile_List.size(); ++i) {
             enp = (EnemyProjectile) enem_projectile_List.get(i);
@@ -193,26 +194,21 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public boolean isCrash(int x1, int y1, int x2, int y2, Image img1, Image img2) {
+    public boolean isCrash(int x1, int y1, int x2, int y2, Image img1, Image img2) { // 이미지 충돌 확인
         boolean check = false;
         if (Math.abs((x1 + img1.getWidth(null) / 2) - (x2 + img2.getWidth(null) / 2)) < (img2.getWidth(null) / 2
                 + img1.getWidth(null) / 2)
                 && Math.abs((y1 + img1.getHeight(null) / 2)
                         - (y2 + img2.getHeight(null) / 2)) < (img2.getHeight(null) / 2 + img1.getHeight(null) / 2)) {
-
             check = true;
-
         } else {
             check = false;
         }
-
         return check;
     }
-
     public void paint(Graphics g) { // 버퍼를 사용하여 화면에 출력
         buffImage = createImage(f_width, f_height);
         buffg = buffImage.getGraphics();
-
         update(g);
     }
 
@@ -290,7 +286,6 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             buffg.drawString("You Win!", 640 - 210, 370);
         }
     }
-
     // 키보드 입력
 
     public void keyPressed(KeyEvent e) { // 키보드가 눌려졌을때의 이벤트 처리 함수
@@ -365,21 +360,23 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
         if (KeyW == true) {
             if (p_y >= 470) {
-                p_y = p_y - p_speed;
+                // p_y = p_y - p_speed;
             }
         }
         if (KeyS == true) {
             if (p_y <= 650) {
-                p_y = p_y + p_speed;
+                // p_y = p_y + p_speed;
             }
         }
         if (KeyQ == true) {
             life = life + 1;
         }
         if (keyShift == true) {
-            p_speed = 8;
-        } else if (keyShift == false) {
             p_speed = 4;
+            reload_sec = 20;
+        } else if (keyShift == false) {
+            p_speed = 8;
+            reload_sec = 30;
         }
     }
 
@@ -432,13 +429,13 @@ class Enemy {
 
     public void move() {
         if (l_or_r) {
-            x = x + (int) ((speed + 1) / 2);
+            x = x + 1;
             cnt++;
             if (cnt > 100) {
                 l_or_r = false;
             }
         } else {
-            x = x - (int) ((speed + 1) / 2);
+            x = x - 1;
             cnt--;
             if (cnt == 0) {
                 l_or_r = true;
