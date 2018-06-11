@@ -270,7 +270,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         buffg.setColor(Color.white);
         buffg.setFont(new Font("default", Font.BOLD, 20));
         buffg.drawString(n, 640 - 50, 70);
-        buffg.drawString("Life : " + life, 640 - 50, 100);
+        buffg.drawString("Life : " + life + " / 3", 640 - 50, 100);
     }
 
     public void draw_Board() {
