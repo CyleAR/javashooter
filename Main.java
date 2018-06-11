@@ -293,13 +293,13 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         case KeyEvent.VK_W:
             KeyW = true;
             break;
-        case KeyEvent.VK_A:
+        case KeyEvent.VK_LEFT:
             KeyA = true;
             break;
         case KeyEvent.VK_S:
             KeyS = true;
             break;
-        case KeyEvent.VK_D:
+        case KeyEvent.VK_RIGHT:
             KeyD = true;
             break;
         case KeyEvent.VK_SPACE:
@@ -309,7 +309,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             keyShift = true;
             break;
         case KeyEvent.VK_Q:
-            KeyQ = true;
+            //KeyQ = true;
             break;
         default:
             break;
@@ -321,13 +321,13 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         case KeyEvent.VK_W:
             KeyW = false;
             break;
-        case KeyEvent.VK_A:
+        case KeyEvent.VK_LEFT:
             KeyA = false;
             break;
         case KeyEvent.VK_S:
             KeyS = false;
             break;
-        case KeyEvent.VK_D:
+        case KeyEvent.VK_RIGHT:
             KeyD = false;
             break;
         case KeyEvent.VK_SPACE:
