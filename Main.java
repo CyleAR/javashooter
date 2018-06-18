@@ -107,7 +107,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         life = 3;
         difficulty = 1;
         reload_sec = 30;
-        // Sound("Victory.wav", true);
+        Sound("Victory.wav", true);
     }
 
     private void start() {
