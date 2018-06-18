@@ -1,5 +1,5 @@
 
-// Copyleft 2018 È²Á¤È¯ All codes can be copied without permission
+// Copyleft 2018 È²ï¿½ï¿½È¯ All codes can be copied without permission
 
 import java.util.*;
 import java.awt.*;
@@ -25,22 +25,22 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     int f_width = 1280;
     int f_height = 720;
 
-    int p_x; // ÇÃ·¹ÀÌ¾î xÁÂÇ¥
-    int p_y; // ÇÃ·¹ÀÌ¾î yÁÂÇ¥
-    int reload; // ÀçÀåÀü ±¸Çö¿ë
-    int reload_sec; // ÀçÀåÀü °£°Ý
-    int en_cnt; // Àû ÀçÀåÀü, ÀçÃâÇö ±¸Çö¿ë Ä«¿îÆ®
+    int p_x; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ xï¿½ï¿½Ç¥
+    int p_y; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ yï¿½ï¿½Ç¥
+    int reload; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int reload_sec; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    int en_cnt; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½Æ®
     int en_width;
     int en_height;
     int pj_width;
     int pj_height;
-    int score; // Á¡¼ö
-    int life; // »ý¸í
-    int difficulty;// ³­µµ
+    int score; // ï¿½ï¿½ï¿½ï¿½
+    int life; // ï¿½ï¿½ï¿½ï¿½
+    int difficulty;// ï¿½ï¿½ï¿½ï¿½
 
-    Thread th; // ½º·¹µå »ý¼º
+    Thread th; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-    boolean KeyW = false; // ÀÔ·Â¿ë º¯¼ö
+    boolean KeyW = false; // ï¿½Ô·Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½
     boolean KeyA = false;
     boolean KeyS = false;
     boolean KeyD = false;
@@ -48,26 +48,26 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     boolean keyShift = false;
     boolean KeyQ = false; // Ä¡Æ®
 
-    int p_speed; // ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍ ¼Óµµ
-    int projectile_speed; // Åº¼Ó
+    int p_speed; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½
+    int projectile_speed; // Åºï¿½ï¿½
 
-    Toolkit tk = Toolkit.getDefaultToolkit(); // ÀÌ¹ÌÁö ºÒ·¯¿À±â¿ë ÅøÅ¶
+    Toolkit tk = Toolkit.getDefaultToolkit(); // ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶
     Image player_Image = tk.getImage("player.png");
     Image projectile_img = tk.getImage("ammo.png");
     Image enemy_img = tk.getImage("enemy.png");
     Image bg_img = tk.getImage("background.png");
     Image enemy_projectile_img = tk.getImage("enemyammo.png");
 
-    ArrayList projectile_List = new ArrayList(); // Åº °ü¸®¿ë ¹è¿­
-    ArrayList enemy_List = new ArrayList(); // Àû °ü¸®¿ë ¹è¿­
-    ArrayList enem_projectile_List = new ArrayList(); // ÀûµéÀÌ ½ð Åº °ü¸®¿ë ¹è¿­
+    ArrayList projectile_List = new ArrayList(); // Åº ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­
+    ArrayList enemy_List = new ArrayList(); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­
+    ArrayList enem_projectile_List = new ArrayList(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Åº ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­
 
     Image buffImage;
     Graphics buffg;
 
-    Projectile pj; // ÇÁ·ÎÁ§Å¸ÀÏ Å¬·¡½º Á¢±Ù
-    Enemy en; // Àû Å¬·¡½º Á¢±Ù
-    EnemyProjectile enp; // Àû Åº Å¬·¡½º Á¢±Ù
+    Projectile pj; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    Enemy en; // ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    EnemyProjectile enp; // ï¿½ï¿½ Åº Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     game_frame() {
         init();
@@ -80,16 +80,16 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         int f_xpos = (int) (screen.getWidth() / 2 - f_width / 2);
         int f_ypos = (int) (screen.getHeight() / 2 - f_height / 2);
         setLocation(f_xpos, f_ypos);
-        setResizable(false); // ÇÁ·¹ÀÓ Å©±â Á¶Àý ºÒ°¡´ÉÇÏ°Ô
+        setResizable(false); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
         setVisible(true);
     }
 
-    private int getImageWidth(Image i) { // ÀÌ¹ÌÁö ³Êºñ ºÒ·¯¿À±â
+    private int getImageWidth(Image i) { // ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Êºï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½
         return i.getWidth(null);
     }
 
     private int getImageHeight(Image i) {
-        return i.getHeight(null); // ÀÌ¹ÌÁö ³ôÀÌ ºÒ·¯¿À±â
+        return i.getHeight(null); // ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 
     private void init() {
@@ -111,43 +111,43 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     }
 
     private void start() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // ¿À¸¥ÂÊ À§ XÅ°·Î Á¤»óÁ¾·á
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ XÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         addKeyListener(this);
-        th = new Thread(this); // ½º·¹µå »ý¼º
-        th.start(); // ½º·¹µå ½ÇÇà - run ÇÔ¼ö ½ÇÇà
+        th = new Thread(this); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        th.start(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - run ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
-    public void run() { // ½º·¹µå ½ÇÇàµÇ¸é È£ÃâµÊ, ½º·¹µå ¹«ÇÑ¹Ýº¹ ±¸¹®
+    public void run() { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ È£ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ¹Ýºï¿½ ï¿½ï¿½ï¿½ï¿½
         try {
             while (true) {
-                KeyProcess_Move(); // Å°º¸µå ÀÔ·ÂÃ³¸®
-                projectileProcess(); // Åº Ã³¸®
-                enemyProcess(); // Àû ¿òÁ÷ÀÓ Ã³¸®
-                enemyProjectileProcess(); // ÀûÀÌ ½ð Åº Ã³¸®
-                isKill(); // Àû-ÇÃ·¹ÀÌ¾î°¡ ½ð ÅºÈ¯ °£ Ãæµ¹ È®ÀÎ
-                iskilled(); // ÀûÀÌ½ð ÅºÈ¯-ÇÃ·¹ÀÌ¾î °£ Ãæµ¹ È®ÀÎ
+                KeyProcess_Move(); // Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½Ã³ï¿½ï¿½
+                projectileProcess(); // Åº Ã³ï¿½ï¿½
+                enemyProcess(); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
+                enemyProjectileProcess(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Åº Ã³ï¿½ï¿½
+                isKill(); // ï¿½ï¿½-ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ ÅºÈ¯ ï¿½ï¿½ ï¿½æµ¹ È®ï¿½ï¿½
+                iskilled(); // ï¿½ï¿½ï¿½Ì½ï¿½ ÅºÈ¯-ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ ï¿½æµ¹ È®ï¿½ï¿½
                 en_cnt++;
                 reload--;
-                repaint(); // °»½ÅµÈ p_x,p_y°ªÀ¸·Î »õ·Î ±×¸®±â
-                Thread.sleep(10); // 10¹Ð¸®¼½¸¶´Ù ½º·¹µå ¹Ýº¹ (1000ms = 1ÃÊ)
+                repaint(); // ï¿½ï¿½ï¿½Åµï¿½ p_x,p_yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
+                Thread.sleep(10); // 10ï¿½Ð¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ýºï¿½ (1000ms = 1ï¿½ï¿½)
             }
         } catch (Exception e) {
         }
     }
 
-    public void projectileProcess() { // Å° ÀÔ·Â½Ã Åº Ã³¸® ¸Þ¼Òµå
+    public void projectileProcess() { // Å° ï¿½Ô·Â½ï¿½ Åº Ã³ï¿½ï¿½ ï¿½Þ¼Òµï¿½
         int imgsize = getImageWidth(projectile_img);
         if (keySpace == true) {
             if (reload <= 0) {
                 pj = new Projectile((int) (p_x - imgsize / 2), p_y - 10);
                 projectile_List.add(pj);
                 Sound("fire.wav", false);
-                reload = reload_sec; // ÀçÀåÀü
+                reload = reload_sec; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             }
         }
     }
 
-    public void enemyProcess() { // Àû »ý¼º Ã³¸®
+    public void enemyProcess() { // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
         if (en_cnt % 300 == 15 && enemy_List.size() == 0) {
             for (int i = 0; i < 10; i++) {
                 en = new Enemy(100 + i * 100, 620 - 480, difficulty);
@@ -157,7 +157,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void enemyProjectileProcess() { // ÀûÀÌ ½ð Åº Ã³¸®
+    public void enemyProjectileProcess() { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Åº Ã³ï¿½ï¿½
         if (en_cnt % (300 - 30 * difficulty) == 0) {
             for (int i = 0; i < enemy_List.size(); i++) {
                 en = (Enemy) (enemy_List.get(i));
@@ -167,7 +167,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void isKill() { // ÀûÀÌ ³»°¡ ½ð Åº¿¡ ¸Â¾Ò³ª Ã³¸®
+    public void isKill() { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Åºï¿½ï¿½ ï¿½Â¾Ò³ï¿½ Ã³ï¿½ï¿½
         int i;
         int j;
         for (i = 0; i < projectile_List.size(); ++i) {
@@ -183,7 +183,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void iskilled() { // ³»°¡ ÀûÀÌ ½ð Åº¿¡ ¸Â¾Ò³ª Ã³¸®
+    public void iskilled() { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Åºï¿½ï¿½ ï¿½Â¾Ò³ï¿½ Ã³ï¿½ï¿½
         int i;
         for (i = 0; i < enem_projectile_List.size(); ++i) {
             enp = (EnemyProjectile) enem_projectile_List.get(i);
@@ -194,7 +194,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public boolean isCrash(int x1, int y1, int x2, int y2, Image img1, Image img2) { // ÀÌ¹ÌÁö Ãæµ¹ È®ÀÎ
+    public boolean isCrash(int x1, int y1, int x2, int y2, Image img1, Image img2) { // ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½æµ¹ È®ï¿½ï¿½
         boolean check = false;
         if (Math.abs((x1 + img1.getWidth(null) / 2) - (x2 + img2.getWidth(null) / 2)) < (img2.getWidth(null) / 2
                 + img1.getWidth(null) / 2)
@@ -206,13 +206,13 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
         return check;
     }
-    public void paint(Graphics g) { // ¹öÆÛ¸¦ »ç¿ëÇÏ¿© È­¸é¿¡ Ãâ·Â
+    public void paint(Graphics g) { // ï¿½ï¿½ï¿½Û¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ È­ï¿½é¿¡ ï¿½ï¿½ï¿½
         buffImage = createImage(f_width, f_height);
         buffg = buffImage.getGraphics();
         update(g);
     }
 
-    public void update(Graphics g) { // ¹öÆÛ ¾÷µ«
+    public void update(Graphics g) { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         draw_BG();
         draw_Enemy();
         draw_Projectile();
@@ -224,47 +224,47 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         g.drawImage(buffImage, 0, 0, this);
     }
 
-    public void draw_BG() { // ¹è°æ ±×¸²
+    public void draw_BG() { // ï¿½ï¿½ï¿½ ï¿½×¸ï¿½
         buffg.clearRect(0, 0, f_width, f_height);
         buffg.drawImage(bg_img, 0, 0, this);
     }
 
-    public void draw_char() { // Ä³¸¯ÅÍ ±×¸®´Â ¸Þ¼Òµå
+    public void draw_char() { // Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Þ¼Òµï¿½
         int imgsize = getImageWidth(player_Image);
         buffg.drawImage(player_Image, (int) (p_x - imgsize / 2), p_y, this);
     }
 
-    public void draw_Projectile() { // Åº ±×¸®´Â ¸Þ¼Òµå
+    public void draw_Projectile() { // Åº ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Þ¼Òµï¿½
         for (int i = 0; i < projectile_List.size(); i++) {
             pj = (Projectile) (projectile_List.get(i));
-            pj.move(projectile_speed);// ±×·ÁÁø ÅºÈ¯µéÀ» Á¤ÇØÁø ¼ýÀÚ¸¸Å­ ÀÌµ¿½ÃÅ°±â
-            if (pj.y < 0) { // È­¸é ¹ÛÀ¸·Î ³ª°¡¸é Áö¿ò
+            pj.move(projectile_speed);// ï¿½×·ï¿½ï¿½ï¿½ ÅºÈ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½Å­ ï¿½Ìµï¿½ï¿½ï¿½Å°ï¿½ï¿½
+            if (pj.y < 0) { // È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 projectile_List.remove(i);
             }
             buffg.drawImage(projectile_img, pj.x, pj.y, this);
         }
     }
 
-    public void draw_Enemy() { // Àû ÀÌ¹ÌÁö¸¦ ±×¸®´Â ¸Þ¼Òµå
+    public void draw_Enemy() { // ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Þ¼Òµï¿½
         for (int i = 0; i < enemy_List.size(); i++) {
             en = (Enemy) (enemy_List.get(i));
             en.move();
-            buffg.drawImage(enemy_img, en.x, en.y, this);// ¹è¿­¿¡ »ý¼ºµÈ °¢ ÀûÀ» ÆÇº°ÇÏ¿© ÀÌ¹ÌÁö ±×¸®±â
+            buffg.drawImage(enemy_img, en.x, en.y, this);// ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Çºï¿½ï¿½Ï¿ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
         }
     }
 
-    public void draw_EnemyProjectile() { // ÀûÀÌ ½ð Åº ±×¸®´Â ¸Þ¼Òµå
+    public void draw_EnemyProjectile() { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Åº ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Þ¼Òµï¿½
         for (int i = 0; i < enem_projectile_List.size(); i++) {
             enp = (EnemyProjectile) (enem_projectile_List.get(i));
             enp.move();
-            if (enp.y > 720) { // È­¸é ¹ÛÀ¸·Î ³ª°¡¸é Áö¿ò
+            if (enp.y > 720) { // È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 enem_projectile_List.remove(i);
             }
             buffg.drawImage(enemy_projectile_img, enp.x, enp.y, this);
         }
     }
 
-    public void draw_Status() { // ½ºÅ×ÀÌÅÍ½º Ã¢ ±×¸®´Â ¸Þ¼Òµå
+    public void draw_Status() { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í½ï¿½ Ã¢ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Þ¼Òµï¿½
         String n;
         n = "SCORE : " + score;
         buffg.setColor(Color.white);
@@ -286,9 +286,9 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             buffg.drawString("You Win!", 640 - 210, 370);
         }
     }
-    // Å°º¸µå ÀÔ·Â
+    // Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½
 
-    public void keyPressed(KeyEvent e) { // Å°º¸µå°¡ ´­·ÁÁ³À»¶§ÀÇ ÀÌº¥Æ® Ã³¸® ÇÔ¼ö
+    public void keyPressed(KeyEvent e) { // Å°ï¿½ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® Ã³ï¿½ï¿½ ï¿½Ô¼ï¿½
         switch (e.getKeyCode()) {
         case KeyEvent.VK_W:
             KeyW = true;
@@ -316,7 +316,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void keyReleased(KeyEvent e) { // Å°º¸µå°¡ ¶§¾îÁ³À»¶§ÀÇ ÀÌº¥Æ® Ã³¸® ÇÔ¼ö
+    public void keyReleased(KeyEvent e) { // Å°ï¿½ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® Ã³ï¿½ï¿½ ï¿½Ô¼ï¿½
         switch (e.getKeyCode()) {
         case KeyEvent.VK_W:
             KeyW = false;
@@ -347,7 +347,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     public void keyTyped(KeyEvent e) {
     }
 
-    public void KeyProcess_Move() { // Å° ÀÔ·Â°ªÀ» ¹ÙÅÁÀ¸·Î ÇÃ·¹ÀÌ ±¸Çö
+    public void KeyProcess_Move() { // Å° ï¿½Ô·Â°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (KeyA == true) {
             if (p_x >= 0) {
                 p_x = p_x - p_speed;
@@ -380,7 +380,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void Sound(String file, boolean Loop) { // ¼Ò¸® Ãâ·Â¿ë ¸Þ¼Òµå
+    public void Sound(String file, boolean Loop) { // ï¿½Ò¸ï¿½ ï¿½ï¿½Â¿ï¿½ ï¿½Þ¼Òµï¿½
         Clip clip;
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -397,11 +397,11 @@ class game_frame extends JFrame implements KeyListener, Runnable {
 }
 
 /////////////////
-// ´Ù¸¥ Å¬·¡½ºµé//
+// ï¿½Ù¸ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½//
 /////////////////
 
-class Projectile { // Åº À§Ä¡ ÆÄ¾Ç ¹× ÀÌµ¿¿ë Å¬·¡½º
-    int x = 0; // Åº ÁÂÇ¥
+class Projectile { // Åº ï¿½ï¿½Ä¡ ï¿½Ä¾ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½
+    int x = 0; // Åº ï¿½ï¿½Ç¥
     int y = 0;
 
     Projectile(int x, int y) {
