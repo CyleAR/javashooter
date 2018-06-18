@@ -284,6 +284,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             buffg.setColor(Color.black);
             buffg.setFont(new Font("default", Font.BOLD, 100));
             buffg.drawString("You Win!", 640 - 210, 370);
+            life = 1000;
         }
     }
     // Ű���� �Է�
