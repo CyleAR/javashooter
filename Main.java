@@ -1,6 +1,3 @@
-
-// Copyleft 2018 Ȳ��ȯ All codes can be copied without permission
-
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -25,49 +22,49 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     int f_width = 1280;
     int f_height = 720;
 
-    int p_x; // �÷��̾� x��ǥ
-    int p_y; // �÷��̾� y��ǥ
-    int reload; // ������ ������
-    int reload_sec; // ������ ����
-    int en_cnt; // �� ������, ������ ������ ī��Ʈ
+    int p_x; 
+    int p_y; 
+    int reload;
+    int reload_sec; 
+    int en_cnt; 
     int en_width;
     int en_height;
     int pj_width;
     int pj_height;
-    int score; // ����
-    int life; // ����
-    int difficulty;// ����
+    int score; 
+    int life; 
+    int difficulty;
 
-    Thread th; // ������ ����
+    Thread th; 
 
-    boolean KeyW = false; // �Է¿� ����
+    boolean KeyW = false; 
     boolean KeyA = false;
     boolean KeyS = false;
     boolean KeyD = false;
     boolean keySpace = false;
     boolean keyShift = false;
-    boolean KeyQ = false; // ġƮ
+    boolean KeyQ = false;
 
-    int p_speed; // �÷��̾� ĳ���� �ӵ�
-    int projectile_speed; // ź��
+    int p_speed; 
+    int projectile_speed; 
 
-    Toolkit tk = Toolkit.getDefaultToolkit(); // �̹��� �ҷ������ ��Ŷ
+    Toolkit tk = Toolkit.getDefaultToolkit(); 
     Image player_Image = tk.getImage("player.png");
     Image projectile_img = tk.getImage("ammo.png");
     Image enemy_img = tk.getImage("enemy.png");
     Image bg_img = tk.getImage("background.png");
     Image enemy_projectile_img = tk.getImage("enemyammo.png");
 
-    ArrayList projectile_List = new ArrayList(); // ź ������ �迭
-    ArrayList enemy_List = new ArrayList(); // �� ������ �迭
-    ArrayList enem_projectile_List = new ArrayList(); // ������ �� ź ������ �迭
+    ArrayList projectile_List = new ArrayList(); 
+    ArrayList enemy_List = new ArrayList(); 
+    ArrayList enem_projectile_List = new ArrayList(); 
 
     Image buffImage;
     Graphics buffg;
 
-    Projectile pj; // ������Ÿ�� Ŭ���� ����
-    Enemy en; // �� Ŭ���� ����
-    EnemyProjectile enp; // �� ź Ŭ���� ����
+    Projectile pj; 
+    Enemy en; 
+    EnemyProjectile enp; 
 
     game_frame() {
         init();
@@ -80,16 +77,16 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         int f_xpos = (int) (screen.getWidth() / 2 - f_width / 2);
         int f_ypos = (int) (screen.getHeight() / 2 - f_height / 2);
         setLocation(f_xpos, f_ypos);
-        setResizable(false); // ������ ũ�� ���� �Ұ����ϰ�
+        setResizable(false); 
         setVisible(true);
     }
 
-    private int getImageWidth(Image i) { // �̹��� �ʺ� �ҷ�����
+    private int getImageWidth(Image i) { 
         return i.getWidth(null);
     }
 
     private int getImageHeight(Image i) {
-        return i.getHeight(null); // �̹��� ���� �ҷ�����
+        return i.getHeight(null);
     }
 
     private void init() {
@@ -111,43 +108,43 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     }
 
     private void start() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // ������ �� XŰ�� ��������
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         addKeyListener(this);
-        th = new Thread(this); // ������ ����
-        th.start(); // ������ ���� - run �Լ� ����
+        th = new Thread(this);
+        th.start(); 
     }
 
-    public void run() { // ������ ����Ǹ� ȣ���, ������ ���ѹݺ� ����
+    public void run() { 
         try {
             while (true) {
-                KeyProcess_Move(); // Ű���� �Է�ó��
-                projectileProcess(); // ź ó��
-                enemyProcess(); // �� ������ ó��
-                enemyProjectileProcess(); // ���� �� ź ó��
-                isKill(); // ��-�÷��̾ �� źȯ �� �浹 Ȯ��
-                iskilled(); // ���̽� źȯ-�÷��̾� �� �浹 Ȯ��
+                KeyProcess_Move(); 
+                projectileProcess(); 
+                enemyProcess(); 
+                enemyProjectileProcess();  
+                isKill(); 
+                iskilled(); 
                 en_cnt++;
                 reload--;
-                repaint(); // ���ŵ� p_x,p_y������ ���� �׸���
-                Thread.sleep(10); // 10�и������� ������ �ݺ� (1000ms = 1��)
+                repaint();
+                Thread.sleep(10); 
             }
         } catch (Exception e) {
         }
     }
 
-    public void projectileProcess() { // Ű �Է½� ź ó�� �޼ҵ�
+    public void projectileProcess() { 
         int imgsize = getImageWidth(projectile_img);
         if (keySpace == true) {
             if (reload <= 0) {
                 pj = new Projectile((int) (p_x - imgsize / 2), p_y - 10);
                 projectile_List.add(pj);
                 Sound("fire.wav", false);
-                reload = reload_sec; // ������
+                reload = reload_sec;
             }
         }
     }
 
-    public void enemyProcess() { // �� ���� ó��
+    public void enemyProcess() { 
         if (en_cnt % 300 == 15 && enemy_List.size() == 0) {
             for (int i = 0; i < 10; i++) {
                 en = new Enemy(100 + i * 100, 620 - 480, difficulty);
@@ -157,7 +154,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void enemyProjectileProcess() { // ���� �� ź ó��
+    public void enemyProjectileProcess() {  
         if (en_cnt % (300 - 30 * difficulty) == 0) {
             for (int i = 0; i < enemy_List.size(); i++) {
                 en = (Enemy) (enemy_List.get(i));
@@ -167,7 +164,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void isKill() { // ���� ���� �� ź�� �¾ҳ� ó��
+    public void isKill() {  
         int i;
         int j;
         for (i = 0; i < projectile_List.size(); ++i) {
@@ -183,7 +180,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void iskilled() { // ���� ���� �� ź�� �¾ҳ� ó��
+    public void iskilled() {  
         int i;
         for (i = 0; i < enem_projectile_List.size(); ++i) {
             enp = (EnemyProjectile) enem_projectile_List.get(i);
@@ -206,13 +203,13 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
         return check;
     }
-    public void paint(Graphics g) { // ���۸� ����Ͽ� ȭ�鿡 ���
+    public void paint(Graphics g) { 
         buffImage = createImage(f_width, f_height);
         buffg = buffImage.getGraphics();
         update(g);
     }
 
-    public void update(Graphics g) { // ���� ����
+    public void update(Graphics g) { 
         draw_BG();
         draw_Enemy();
         draw_Projectile();
@@ -224,47 +221,47 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         g.drawImage(buffImage, 0, 0, this);
     }
 
-    public void draw_BG() { // ��� �׸�
+    public void draw_BG() { 
         buffg.clearRect(0, 0, f_width, f_height);
         buffg.drawImage(bg_img, 0, 0, this);
     }
 
-    public void draw_char() { // ĳ���� �׸��� �޼ҵ�
+    public void draw_char() { 
         int imgsize = getImageWidth(player_Image);
         buffg.drawImage(player_Image, (int) (p_x - imgsize / 2), p_y, this);
     }
 
-    public void draw_Projectile() { // ź �׸��� �޼ҵ�
+    public void draw_Projectile() { 
         for (int i = 0; i < projectile_List.size(); i++) {
             pj = (Projectile) (projectile_List.get(i));
-            pj.move(projectile_speed);// �׷��� źȯ���� ������ ���ڸ�ŭ �̵���Ű��
-            if (pj.y < 0) { // ȭ�� ������ ������ ����
+            pj.move(projectile_speed);
+            if (pj.y < 0) { 
                 projectile_List.remove(i);
             }
             buffg.drawImage(projectile_img, pj.x, pj.y, this);
         }
     }
 
-    public void draw_Enemy() { // �� �̹����� �׸��� �޼ҵ�
+    public void draw_Enemy() { 
         for (int i = 0; i < enemy_List.size(); i++) {
             en = (Enemy) (enemy_List.get(i));
             en.move();
-            buffg.drawImage(enemy_img, en.x, en.y, this);// �迭�� ������ �� ���� �Ǻ��Ͽ� �̹��� �׸���
+            buffg.drawImage(enemy_img, en.x, en.y, this);
         }
     }
 
-    public void draw_EnemyProjectile() { // ���� �� ź �׸��� �޼ҵ�
+    public void draw_EnemyProjectile() {  
         for (int i = 0; i < enem_projectile_List.size(); i++) {
             enp = (EnemyProjectile) (enem_projectile_List.get(i));
             enp.move();
-            if (enp.y > 720) { // ȭ�� ������ ������ ����
+            if (enp.y > 720) {
                 enem_projectile_List.remove(i);
             }
             buffg.drawImage(enemy_projectile_img, enp.x, enp.y, this);
         }
     }
 
-    public void draw_Status() { // �������ͽ� â �׸��� �޼ҵ�
+    public void draw_Status() { 
         String n;
         n = "SCORE : " + score;
         buffg.setColor(Color.white);
@@ -287,9 +284,8 @@ class game_frame extends JFrame implements KeyListener, Runnable {
             life = 10000;
         }
     }
-    // Ű���� �Է�
 
-    public void keyPressed(KeyEvent e) { // Ű���尡 ������������ �̺�Ʈ ó�� �Լ�
+    public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_W:
             KeyW = true;
@@ -317,7 +313,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void keyReleased(KeyEvent e) { // Ű���尡 ������������ �̺�Ʈ ó�� �Լ�
+    public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_W:
             KeyW = false;
@@ -348,7 +344,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     public void keyTyped(KeyEvent e) {
     }
 
-    public void KeyProcess_Move() { // Ű �Է°��� �������� �÷��� ����
+    public void KeyProcess_Move() { 
         if (KeyA == true) {
             if (p_x >= 0) {
                 p_x = p_x - p_speed;
@@ -381,7 +377,7 @@ class game_frame extends JFrame implements KeyListener, Runnable {
         }
     }
 
-    public void Sound(String file, boolean Loop) { // �Ҹ� ��¿� �޼ҵ�
+    public void Sound(String file, boolean Loop) {
         Clip clip;
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -397,12 +393,10 @@ class game_frame extends JFrame implements KeyListener, Runnable {
     }
 }
 
-/////////////////
-// �ٸ� Ŭ������//
-/////////////////
 
-class Projectile { // ź ��ġ �ľ� �� �̵��� Ŭ����
-    int x = 0; // ź ��ǥ
+
+class Projectile {
+    int x = 0; 
     int y = 0;
 
     Projectile(int x, int y) {
